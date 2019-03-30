@@ -42,10 +42,11 @@ public class Simon implements ActionListener, MouseListener
 		renderer = new Renderer();
 
 		frame.setSize(WIDTH + 8, HEIGHT + 30);
+		frame.add(renderer);
 		frame.setVisible(true);
 		frame.addMouseListener(this);
 		frame.setResizable(false);
-		frame.add(renderer);
+		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		start();
