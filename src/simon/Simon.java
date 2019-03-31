@@ -15,7 +15,9 @@ import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-public class Simon implements ActionListener, MouseListener
+import gnu.io.SerialPortEvent;
+
+public class Simon extends LlegeixTeclat implements ActionListener, MouseListener
 {
 
 	public static Simon simon;
@@ -63,10 +65,42 @@ public class Simon implements ActionListener, MouseListener
 		flashed = 0;
 		ticks = 0;
 	}
+	public synchronized void serialEvent(SerialPortEvent oEvent) {
+		MouseEvent e;
+		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
+			try {
+				String inputLine=null;
+				if (input.ready()) {
+					inputLine = input.readLine();
+					System.out.println(inputLine);
+					if (inputLine.equals("verd")) {
+						e=new MouseEvent(renderer, 0, 0, 0, WIDTH/4, HEIGHT/4, 1, false);
+						mousePressed(e);
+					}
+					else if (inputLine.equals("vermell")) { 
+						e=new MouseEvent(renderer, 0, 0, 0, WIDTH-10, HEIGHT/4, 1, false);
+						mousePressed(e);
+					}
+					else if (inputLine.equals("groc")) { 
+						e=new MouseEvent(renderer, 0, 0, 0, WIDTH/4, HEIGHT-10, 1, false);
+						mousePressed(e);
+					}
+					else if (inputLine.equals("blau")) { 
+						e=new MouseEvent(renderer, 0, 0, 0, WIDTH-10, HEIGHT-10, 1, false);
+						mousePressed(e);
+					}
+				}
 
+			} catch (Exception exc) {
+				System.err.println(exc.toString());
+			}
+		}
+		// Ignore all the other eventTypes, but you should consider the other ones.
+	}
 	public static void main(String[] args)
 	{
 		simon = new Simon();
+		simon.initialize();
 	}
 
 	@Override
@@ -195,22 +229,22 @@ public class Simon implements ActionListener, MouseListener
 
 		if (!creatingPattern && !gameOver)
 		{
-			if (x > 0 && x < WIDTH / 2 && y > 0 && y < HEIGHT / 2)
+			if (x > 0 && x < WIDTH / 2 && y > 0 && y < HEIGHT / 2) // verd
 			{
 				flashed = 1;
 				ticks = 1;
 			}
-			else if (x > WIDTH / 2 && x < WIDTH && y > 0 && y < HEIGHT / 2)
+			else if (x > WIDTH / 2 && x < WIDTH && y > 0 && y < HEIGHT / 2) // vermell
 			{
 				flashed = 2;
 				ticks = 1;
 			}
-			else if (x > 0 && x < WIDTH / 2 && y > HEIGHT / 2 && y < HEIGHT)
+			else if (x > 0 && x < WIDTH / 2 && y > HEIGHT / 2 && y < HEIGHT) // groc
 			{
 				flashed = 3;
 				ticks = 1;
 			}
-			else if (x > WIDTH / 2 && x < WIDTH && y > HEIGHT / 2 && y < HEIGHT)
+			else if (x > WIDTH / 2 && x < WIDTH && y > HEIGHT / 2 && y < HEIGHT) //blau
 			{
 				flashed = 4;
 				ticks = 1;
